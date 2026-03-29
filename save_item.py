@@ -18,12 +18,15 @@ def save_record(category, content):
     # 将记录追加到对应的 Markdown 文件中
     with open(file_path, "a", encoding="utf-8") as f:
         f.write(f"### 🕒 {now}\n")
-        # 判断是否为图片路径（包含/或\）
-        if "/" in content or "\\" in content:
-            # 纯图片路径，直接嵌入图片
+        # 判断内容类型
+        if content.startswith("http://") or content.startswith("https://"):
+            # 网页链接，直接输出为超链接（无法嵌入，只能跳转）
+            f.write(f"[🔗 {content}]({content})\n\n")
+        elif "/" in content or "\\" in content:
+            # 本地文件路径，嵌入为图片
             f.write(f"![image]({content})\n\n")
         else:
-            # 文本内容
+            # 纯文本内容
             f.write(f"{content}\n\n")
             
     print(f"Success: Saved to {category}.md")
