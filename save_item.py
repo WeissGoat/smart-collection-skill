@@ -25,9 +25,16 @@ def save_record(category, content, image_paths_str=None):
         f.write(f"### 🕒 {now}\n")
 
         # 写入文本内容
+        IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif", ".bmp")
         if content.startswith("http://") or content.startswith("https://"):
-            # 网页链接，输出为超链接
-            f.write(f"[🔗 {content}]({content})\n\n")
+            # 去掉 query string 后检测后缀
+            url_path = content.lower().split("?")[0]
+            if url_path.endswith(IMAGE_EXTS):
+                # 直链图片，内嵌渲染
+                f.write(f"![image]({content})\n\n")
+            else:
+                # 普通页面 URL，输出超链接
+                f.write(f"[🔗 {content}]({content})\n\n")
         else:
             # 纯文本内容（描述）
             f.write(f"{content}\n\n")
